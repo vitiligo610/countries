@@ -9,6 +9,13 @@ The user interface is very simple. The country to be shown is found by typing a 
 
 In this application, it is also possible to see the current weather in the country's capital.
 
+# Screenshots
+
+![](./images/image1.png)
+![](./images/image2.png)
+![](./images/image3.png)
+![](./images/image4.png)
+
 ## Start the application
 
 To start an application, do the following :
