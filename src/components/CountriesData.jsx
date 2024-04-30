@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 
-function CountriesData ({ data, single }) {
+function CountriesData({ data, single }) {
     const [visible, setVisible] = useState(false)
     const [coordinates, setCoordinates] = useState({
         lat: null,
@@ -10,60 +10,42 @@ function CountriesData ({ data, single }) {
     const [weatherData, setWeatherData] = useState(null)
     const [loadingWeather, setLoadingWeather] = useState(true)
     const [buttonClicked, setButtonClicked] = useState(false)
-    
-    const appId = process.env.REACT_APP_API_KEY
-    
+
+    const appId = import.meta.env.VITE_API_KEY
+
     let cityName
     if (data.capital)
-    cityName = data.capital[0]
-    
-    const geoDataUrl = `http://api.openweathermap.org/geo/1.0/direct?q=${cityName}&limit=5&appid=${appId}`
+        cityName = data.capital[0]
 
     useEffect(() => {
         single && setButtonClicked(true)
     }, [single])
 
     useEffect(() => {
-        if (buttonClicked) {
+        if (buttonClicked)
+            fetchAndSetWeatherData()
+    }, [buttonClicked])
+
+    function fetchAndSetWeatherData() {
+        const url = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&units=metric&appid=${appId}`
             axios
-                .get(geoDataUrl)
+                .get(url)
                 .then(response => {
-                    setCoordinates({
-                        lat: response.data[0].lat,
-                        lon: response.data[0].lon
-                    })
+                    console.log('request sent')
+                    setWeatherData(
+                        {
+                            temp: response.data.main.temp,
+                            description: response.data.weather[0].description,
+                            icon: response.data.weather[0].icon,
+                            wind_speed: response.data.wind.speed
+                        }
+                    )
+                    setLoadingWeather(!loadingWeather)
                 })
                 .catch(error => console.log(error))
-        }
-    }, [buttonClicked, geoDataUrl])
-    
-    useEffect(() => {
-        if (buttonClicked) {
-            if (coordinates.lat !== null && coordinates.lon !== null) {
-                const url = `https://api.openweathermap.org/data/2.5/onecall?lat=${coordinates.lat}&lon=${coordinates.lon}&exclude=hourly,daily&units=metric&appid=${appId}`
-            
-                axios
-                    .get(url)
-                    .then(response => {
-                        console.log('request sent')
-                        setWeatherData(
-                            {
-                                temp: response.data.current.temp,
-                                description: response.data.current.weather[0].description,
-                                icon: response.data.current.weather[0].icon,
-                                wind_speed: response.data.current.wind_speed
-                            }
-                        )
-                        setLoadingWeather(!loadingWeather)
-                    })
-                    .catch(error => console.log(error))
-            }
-        }
-        // eslint-disable-next-line
-    }, [buttonClicked, coordinates, appId])
-    data.name.common === 'Palestine' && console.log(weatherData)
+    }
 
-    function loopLanguages (languages) {
+    function loopLanguages(languages) {
         const values = []
         for (let language in languages)
             values.push(languages[language])
@@ -79,22 +61,22 @@ function CountriesData ({ data, single }) {
         )
     }
 
-    function loopCapitals (capital) {
+    function loopCapitals(capital) {
         const values = []
         for (let key in capital)
             values.push(capital[key])
         return (
             <>
-               {
-                values.map((value, id) => (
-                    <span key={id}>{value}{id !== values.length - 1 && ", "} </span>
-                ))
-               } 
+                {
+                    values.map((value, id) => (
+                        <span key={id}>{value}{id !== values.length - 1 && ", "} </span>
+                    ))
+                }
             </>
         )
     }
 
-    function handleClick () {
+    function handleClick() {
         setVisible(!visible)
         setButtonClicked(!buttonClicked)
     }
@@ -102,7 +84,7 @@ function CountriesData ({ data, single }) {
     return (
         <div>
             {
-                !single && 
+                !single &&
                 <p>
                     {data.name.common} <button onClick={handleClick}>{visible ? "hide" : "show"}</button>
                 </p>
@@ -130,7 +112,7 @@ function CountriesData ({ data, single }) {
                     <div className="border"></div>
                 </>
             }
-            
+
         </div>
     )
 }

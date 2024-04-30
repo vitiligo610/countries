@@ -24,9 +24,9 @@ To start an application, do the following :
 # Install dependancies
 $ npm install
 # create a .env file and put there the API KEY for retrieving data from https://openweather.org/
-$ echo "REACT_APP_API_KEY=<YOUR-API-KEY>" > .env
+$ echo "VITE_API_KEY=<YOUR-API-KEY>" > .env
 # Start the application
 $ npm start
 ```
 
-You can then access the app on : http://localhost:3000/
+You can then access the app on : http://localhost:5173/
